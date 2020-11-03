@@ -13,22 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid.sql.dialect.mysql.ast;
+package com.alibaba.druid.wall.spi;
 
-import com.alibaba.druid.sql.ast.SQLObjectImpl;
-import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
-import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitor;
+import com.alibaba.druid.wall.WallProvider;
+import com.alibaba.druid.wall.WallVisitor;
 
-public abstract class MySqlObjectImpl extends SQLObjectImpl implements MySqlObject {
-
-    @Override
-    protected void accept0(SQLASTVisitor v) {
-        if (v instanceof MySqlASTVisitor) {
-            accept0((MySqlASTVisitor) v);
-        } else {
-            throw new IllegalArgumentException("not support visitor type : " + v.getClass().getName());
-        }
+public class ClickhouseWallVisitor extends WallVisitorBase implements WallVisitor, PGASTVisitor {
+    public ClickhouseWallVisitor(WallProvider provider){
+        super (provider);
     }
 
-    public abstract void accept0(MySqlASTVisitor v);
+    @Override
+    public DbType getDbType() {
+        return DbType.clickhouse;
+    }
 }

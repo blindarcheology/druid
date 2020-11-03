@@ -3229,7 +3229,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
 
         SQLColumnDefinition.Identity identity = x.getIdentity();
         if (identity != null) {
-            print(' ');
+            if (dbType == DbType.h2) {
+                print0(ucase ? " AS " : " as ");
+            } else {
+                print(' ');
+            }
             identity.accept(this);
         }
 
@@ -4239,7 +4243,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         if (x.isNot()) {
             print0(ucase ? " NOT IN (" : " not in (");
         } else {
-            print0(ucase ? " IN (" : " in (");
+            if (x.isGlobal()) {
+                print0(ucase ? " GLOBAL IN (" : " global in (");
+            } else {
+                print0(ucase ? " IN (" : " in (");
+            }
         }
 
         this.indentCount++;
@@ -5286,6 +5294,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter implements Paramet
         this.indentCount++;
         x.getColumn().accept(this);
         this.indentCount--;
+
+        if (x.isWithValues()) {
+            print0(ucase ? " WITH VALUES" : " with values");
+        }
+
         return false;
     }
 

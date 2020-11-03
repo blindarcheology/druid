@@ -1838,6 +1838,10 @@ public class SQLStatementParser extends SQLParser {
 
                             break;
                         }
+                    } else if (lexer.token == DEFAULT) {
+                        SQLConstraint constraint = this.exprParser.parseConstaint();
+                        SQLAlterTableAddConstraint item = new SQLAlterTableAddConstraint(constraint);
+                        stmt.addItem(item);
                     } else {
                         throw new ParserException("TODO " + lexer.info());
                     }
@@ -3343,6 +3347,9 @@ public class SQLStatementParser extends SQLParser {
                 } else if (lexer.identifierEquals(Constants.RESOURCE)) {
                     lexer.reset(markBp, markChar, Token.CREATE);
                     return parseCreateResourceGroup();
+                } else if (lexer.token() == FOREIGN) {
+                    lexer.reset(markBp, markChar, Token.CREATE);
+                    return parseCreateTable();
                 }
 
                 throw new ParserException("TODO " + lexer.info());
